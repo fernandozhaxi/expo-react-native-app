@@ -2,6 +2,8 @@ import axios, { AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestCo
 import qs from "qs";
 import { config } from "@/utils/axios/config";
 import Toast from 'react-native-toast-message';
+import { showConfirm } from "@/components/GlobalConfirm";
+import { pushLogin } from '@/utils/GlobalRouter';
 
 import { getAccessToken, getRefreshToken, setToken, removeToken } from "@/utils/auth";
 const { result_code, base_url, request_timeout } = config;
@@ -197,26 +199,19 @@ const refreshToken = async () => {
 const handleAuthorized = async () => {
   if (!isRelogin.show) {
     // 如果已经到登录页面则不进行弹窗提示
-    // if (window.location.href.includes("login")) {
-    //   return;
-    // }
+    if (window.location.href.includes("login")) {
+      return;
+    }
     isRelogin.show = true;
-    // if (confirm) {
-    //   const ok = await confirm({
-    //     title: t("common.confirmTitle"),
-    //     message: t("sys.api.timeoutMessage"),
-    //     showCancelButton: false,
-    //     confirmButtonText: t("login.relogin")
-    //   });
-    //   if (ok) {
-    //     // resetRouter(); // 重置静态路由表
-    //     deleteUserCache(); // 删除用户缓存
-    //     removeToken();
-    //     isRelogin.show = false;
-    //     // 干掉token后再走一次路由让它过router.beforeEach的校验
-    //     window.location.href = window.location.href;
-    //   }
-    // }
+      showConfirm({
+        title: "Tips",
+        message: "登录已过期，请重新登录",
+        onConfirm: () => {
+          removeToken();
+          isRelogin.show = false;
+          pushLogin()
+        }
+      });
   }
   return Promise.reject('Timeout');
 };

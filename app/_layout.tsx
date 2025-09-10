@@ -4,9 +4,12 @@ import { ThemeProvider as NavThemeProvider } from '@react-navigation/native';
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { Provider as PaperProvider } from "react-native-paper";
 import Toast from 'react-native-toast-message';
+import { GlobalConfirm } from "@/components/GlobalConfirm";
+import { setRouter } from '@/utils/GlobalRouter';
 
-import { Stack } from 'expo-router';
+import { Stack, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 
 
@@ -23,6 +26,8 @@ export {
 export default function RootLayout() {
   useInitialAndroidBarSync();
   const { colorScheme, isDarkColorScheme } = useColorScheme();
+  const router = useRouter()
+  setRouter(router) // save to global
 
   return (
     <>
@@ -34,11 +39,14 @@ export default function RootLayout() {
         <BottomSheetModalProvider>
           <ActionSheetProvider>
             <NavThemeProvider value={NAV_THEME[colorScheme]}>
-              <AuthProvider >
-                <Stack screenOptions={SCREEN_OPTIONS}>
-                  <Stack.Screen name="(tabs)" options={TABS_OPTIONS} />
-                </Stack>
-              </AuthProvider>
+              <PaperProvider>
+                <AuthProvider >
+                  <Stack screenOptions={SCREEN_OPTIONS}>
+                    <Stack.Screen name="(tabs)" options={TABS_OPTIONS} />
+                  </Stack>
+                  <GlobalConfirm />
+                </AuthProvider>
+              </PaperProvider>
             </NavThemeProvider>
           </ActionSheetProvider>
         </BottomSheetModalProvider>
