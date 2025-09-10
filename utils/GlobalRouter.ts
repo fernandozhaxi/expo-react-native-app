@@ -9,6 +9,6 @@ export const setRouter = (r: any) => {
 export const pushLogin = () => {
   console.log('pushLogin')
   if (router) {
-    router.push('/');
+    router.push('/sign-in');
   }
 };
