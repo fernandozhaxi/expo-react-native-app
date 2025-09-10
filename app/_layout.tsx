@@ -1,7 +1,5 @@
 import '../global.css';
 import 'expo-dev-client';
-import { Icon } from '@roninoss/icons';
-
 import { ThemeProvider as NavThemeProvider } from '@react-navigation/native';
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 
@@ -11,7 +9,6 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { Link, Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { Pressable, View } from 'react-native';
 
 
 import { cn } from '~/lib/cn';

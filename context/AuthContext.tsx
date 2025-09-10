@@ -33,13 +33,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const login = async (username: string, password: string) => {
-    const { token, refreshToken } = await loginApi({
-      username, password
-    })
-    // 请求用户信息
-    // setUser(data.user);
-    setAccessToken(token);
-    setRefreshToken(refreshToken);
+    try {
+      const { token, refreshToken } = await loginApi({
+        username, password
+      })
+      // 请求用户信息
+      // setUser(data.user);
+      setAccessToken(token);
+      setRefreshToken(refreshToken);
+    } catch (error) {
+      console.log(error)
+    }
   };
 
   const logout = async () => {

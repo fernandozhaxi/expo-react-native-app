@@ -110,6 +110,7 @@ const SignInScreen = () => {
 
   const handleSignIn = async () => {
     if (!email || !password) {
+      console.log('不能为空')
       Alert.alert("Error", "Please fill in all fields");
       return;
     }
