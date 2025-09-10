@@ -1,7 +1,7 @@
-import { HorizonAPI, Product } from '@/api/products';
+import React, { useEffect, useState } from 'react';
+import { FlatList, Image, Text, TouchableOpacity, View, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, Image, Text, TouchableOpacity, View } from 'react-native';
+import { WooCommerceAPI, Product } from '../api/products';
 
 export default function ProductsScreen() {
   const router = useRouter();
@@ -9,9 +9,9 @@ export default function ProductsScreen() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    HorizonAPI.getProducts()
+    WooCommerceAPI.getProducts()
       .then((data) => setProducts(data))
-      .catch((err) => console.error('❌ Network Error:', err))
+      .catch((err) => console.error('❌ Horizon Error:', err))
       .finally(() => setLoading(false));
   }, []);
 
@@ -31,8 +31,7 @@ export default function ProductsScreen() {
       renderItem={({ item }) => (
         <TouchableOpacity
           className="mb-4 flex-row items-center rounded-lg bg-white p-4 shadow"
-        // onPress={() => router.push(`/product/${item.id}`)}
-        >
+          onPress={() => router.push(`/product/${item.id}`)}>
           <Image source={{ uri: item.images[0]?.src }} style={{ width: 100, height: 100 }} />
           <View className="flex-1">
             <Text className="text-lg font-bold">{item.name}</Text>

@@ -1,29 +1,65 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+import '../global.css';
+import 'expo-dev-client';
+import { Icon } from '@roninoss/icons';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
+import { ThemeProvider as NavThemeProvider } from '@react-navigation/native';
+import { ActionSheetProvider } from '@expo/react-native-action-sheet';
+
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
+import { Link, Stack } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import { Pressable, View } from 'react-native';
+
+
+import { ThemeToggle } from '~/components/ThemeToggle';
+import { cn } from '~/lib/cn';
+import { useColorScheme, useInitialAndroidBarSync } from '~/lib/useColorScheme';
+import { NAV_THEME } from '~/theme';
+
+export {
+  ErrorBoundary,
+} from 'expo-router';
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
-  if (!loaded) {
-    // Async font loading only occurs in development.
-    return null;
-  }
+  useInitialAndroidBarSync();
+  const { colorScheme, isDarkColorScheme } = useColorScheme();
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="404" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <>
+      <StatusBar
+        key={`root-status-bar-${isDarkColorScheme ? 'light' : 'dark'}`}
+        style={isDarkColorScheme ? 'light' : 'dark'}
+      />
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <BottomSheetModalProvider>
+          <ActionSheetProvider>
+            <NavThemeProvider value={NAV_THEME[colorScheme]}>
+              <Stack screenOptions={SCREEN_OPTIONS}>
+                <Stack.Screen name="(tabs)" options={TABS_OPTIONS} />
+                <Stack.Screen name="modal" options={MODAL_OPTIONS} />
+              </Stack>
+            </NavThemeProvider>
+          </ActionSheetProvider>
+        </BottomSheetModalProvider>
+      </GestureHandlerRootView>
+    </>
   );
 }
+
+const SCREEN_OPTIONS = {
+  animation: 'ios_from_right', // for android
+} as const;
+
+const TABS_OPTIONS = {
+  headerShown: false,
+} as const;
+
+const MODAL_OPTIONS = {
+  presentation: 'modal',
+  animation: 'fade_from_bottom', // for android
+  title: 'Modal',
+  headerRight: () => <ThemeToggle />,
+} as const;

@@ -11,7 +11,7 @@ export type Product = {
   categories?: { id: number; name: string }[];
 };
 
-export const HorizonAPI = {
+export const WooCommerceAPI = {
   getProducts: () => requests.get<Product[]>('products'),
   getProduct: (id: number) => requests.get<Product>(`products/${id}`),
   getProductNoType: (id: number) => requests.get(`products/${id}`),

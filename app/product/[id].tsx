@@ -1,15 +1,15 @@
-import { HorizonAPI, Product } from '@/api/products';
-import { useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
-  ActivityIndicator,
-  Image,
   ScrollView,
+  Image,
+  ActivityIndicator,
   Text,
   View,
   useWindowDimensions,
 } from 'react-native';
+import { useLocalSearchParams } from 'expo-router';
 import RenderHtml from 'react-native-render-html';
+import { WooCommerceAPI, Product } from '~/api/products';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ProductDetail() {
@@ -24,10 +24,10 @@ export default function ProductDetail() {
     const fetchProduct = async () => {
       try {
         setLoading(true);
-        const data = await HorizonAPI.getProduct(Number(id));
+        const data = await WooCommerceAPI.getProduct(Number(id));
         setProduct(data);
         // Optionally log full raw product object
-        // HorizonApi.getProductNoType(Number(id)).then((data) => console.log(data));
+        // WooCommerceAPI.getProductNoType(Number(id)).then((data) => console.log(data));
       } catch (error) {
         console.error('Error fetching product:', error);
       } finally {

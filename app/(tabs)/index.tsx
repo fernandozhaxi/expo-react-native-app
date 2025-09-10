@@ -1,17 +1,16 @@
-import { Container } from '@/components/Container';
-import ProductsScreen from '@/pages/products';
+import axios from 'axios';
 import { Stack } from 'expo-router';
+import { Container } from '~/components/Container';
+import { Text } from 'react-native';
 
-import { ThemedText } from '@/components/ThemedText';
+import ProductsScreen from '~/pages/products';
 
 export default function Home() {
   return (
     <>
-      <Stack.Screen options={{ title: 'Home page' }} />
+      <Stack.Screen options={{ title: 'Home' }} />
       <Container>
-        <ThemedText>
-          Home页面1
-        </ThemedText>
+        <Text>Home</Text>
         <ProductsScreen />
       </Container>
     </>

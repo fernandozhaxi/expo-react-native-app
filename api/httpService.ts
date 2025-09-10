@@ -1,10 +1,13 @@
 // src/api/httpService.ts
 import axios, { AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import Constants from 'expo-constants';
+import { Buffer } from 'buffer'; // Needed in React Native for base64 encoding
 
-const { API_BASE_URL } = Constants.expoConfig?.extra || {};
+const { API_BASE_URL, KEY, SECRET } = Constants.expoConfig?.extra || {};
 
-console.log('🔗 horizon API Base:', API_BASE_URL);
+
+// Encode key + secret for Basic Auth
+const basicAuth = Buffer.from(`${KEY}:${SECRET}`).toString('base64');
 
 // Axios instance
 const instance = axios.create({
@@ -13,7 +16,7 @@ const instance = axios.create({
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
-    Authorization: `Basic `,
+    Authorization: `Basic ${basicAuth}`,
   },
 });
 

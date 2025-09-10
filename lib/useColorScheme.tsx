@@ -1,9 +1,12 @@
 import * as NavigationBar from 'expo-navigation-bar';
 import { useColorScheme as useNativewindColorScheme } from 'nativewind';
 import * as React from 'react';
-import { Platform } from 'react-native';
+// import { Platform } from 'react-native';
+const Platform = {
+  OS: 'ios'
+}
 
-import { COLORS } from '@/theme/colors';
+import { COLORS } from '~/theme/colors';
 
 function useColorScheme() {
   const { colorScheme, setColorScheme: setNativeWindColorScheme } = useNativewindColorScheme();
