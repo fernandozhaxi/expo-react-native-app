@@ -1,15 +1,8 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import qs from "qs";
 import { config } from "@/utils/axios/config";
-import {
-  getAccessToken,
-  getRefreshToken,
-  removeToken,
-  setToken
-} from "@/utils/auth";
-import errorCode from "./errorCode";
 
-import { deleteUserCache } from "@/hooks/web/useCache";
+import { getAccessToken, getRefreshToken, setToken, removeToken } from "@/utils/auth";
 const { result_code, base_url, request_timeout } = config;
 
 // 需要忽略的提示。忽略后，自动 Promise.reject('error')
@@ -40,7 +33,7 @@ const service: AxiosInstance = axios.create({
 
 // request拦截器
 service.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
+  async (config: InternalAxiosRequestConfig) => {
     // 是否需要设置 token
     let isToken = (config!.headers || {}).isToken === false;
     whiteList.some((v) => {
@@ -48,8 +41,9 @@ service.interceptors.request.use(
         return (isToken = false);
       }
     });
-    if (getAccessToken() && !isToken) {
-      config.headers.Authorization = "Bearer " + getAccessToken(); // 让每个请求携带自定义token
+     const token = await getAccessToken();
+    if (token && !isToken) {
+      config.headers.Authorization = "Bearer " + token; // 让每个请求携带自定义token
     }
     // config.header['terminal'] = getTerminal();
     // config.header['tenant-id'] = getTenantId();
@@ -82,6 +76,7 @@ service.interceptors.response.use(
   async (response: AxiosResponse<any>) => {
     let { data } = response;
     const config = response.config;
+    const token = await getAccessToken()
     if (!data) {
       // 返回“[HTTP]请求没有返回值”;
       throw new Error();
@@ -117,7 +112,7 @@ service.interceptors.response.use(
           const refreshTokenRes = await refreshToken();
           // 2.1 刷新成功，则回放队列的请求 + 当前请求
           setToken(refreshTokenRes.data.data);
-          config.headers!.Authorization = "Bearer " + getAccessToken();
+          config.headers!.Authorization = "Bearer " + token;
           requestList.forEach((cb: any) => {
             cb();
           });
@@ -139,7 +134,7 @@ service.interceptors.response.use(
         // 添加到队列，等待刷新获取到新的令牌
         return new Promise((resolve) => {
           requestList.push(() => {
-            config.headers!.Authorization = "Bearer " + getAccessToken(); // 让每个请求携带自定义token 请根据实际情况自行修改
+            config.headers!.Authorization = "Bearer " + token; // 让每个请求携带自定义token 请根据实际情况自行修改
             resolve(service(config));
           });
         });
@@ -178,8 +173,9 @@ service.interceptors.response.use(
 );
 
 const refreshToken = async () => {
+  const token = await getRefreshToken()
   return await axios.post(
-    base_url + "/system/auth/refresh-token?refreshToken=" + getRefreshToken()
+    base_url + "/member/auth/refresh-token?refreshToken=" + token
   );
 };
 

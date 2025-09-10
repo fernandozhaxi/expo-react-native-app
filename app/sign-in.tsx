@@ -1,6 +1,7 @@
 import { StyleSheet, Dimensions } from "react-native";
 import { useRouter } from "expo-router";
 import { useState } from "react";
+import { useAuth } from "@/context/AuthContext";
 import {
   View,
   Text,
@@ -27,12 +28,6 @@ const authStyles = StyleSheet.create({
     flexGrow: 1,
     paddingHorizontal: 24,
     paddingTop: 40,
-  },
-  imageContainer: {
-    height: height * 0.3,
-    marginBottom: 30,
-    justifyContent: "center",
-    alignItems: "center",
   },
   image: {
     width: 320,
@@ -107,9 +102,7 @@ const authStyles = StyleSheet.create({
 
 const SignInScreen = () => {
   const router = useRouter();
-
-  // const { signIn, setActive, isLoaded } = useSignIn();
-
+  const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -121,28 +114,8 @@ const SignInScreen = () => {
       return;
     }
 
-    // if (!isLoaded) return;
-
-    // setLoading(true);
-
-    // try {
-    //   const signInAttempt = await signIn.create({
-    //     identifier: email,
-    //     password,
-    //   });
-
-    //   if (signInAttempt.status === "complete") {
-    //     await setActive({ session: signInAttempt.createdSessionId });
-    //   } else {
-    //     Alert.alert("Error", "Sign in failed. Please try again.");
-    //     console.error(JSON.stringify(signInAttempt, null, 2));
-    //   }
-    // } catch (err) {
-    //   Alert.alert("Error", err.errors?.[0]?.message || "Sign in failed");
-    //   console.error(JSON.stringify(err, null, 2));
-    // } finally {
-    //   setLoading(false);
-    // }
+    await login(email, password);
+    router.back();
   };
 
   return (
@@ -156,13 +129,6 @@ const SignInScreen = () => {
           contentContainerStyle={authStyles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
-          <View style={authStyles.imageContainer}>
-            {/* <Image
-              source={require("../../assets/images/i1.png")}
-              style={authStyles.image}
-              contentFit="contain"
-            /> */}
-          </View>
 
           <Text style={authStyles.title}>Welcome Back</Text>
 

@@ -1,57 +1,34 @@
-import { useCache, CACHE_KEY } from '@/hooks/web/useCache'
-import { TokenType } from '@/api/login/types'
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const { wsCache } = useCache()
+const ACCESS_TOKEN_KEY = "access_token";
+const REFRESH_TOKEN_KEY = "refresh_token";
+const USER_KEY = "user";
 
-const AccessTokenKey = 'ACCESS_TOKEN'
-const RefreshTokenKey = 'REFRESH_TOKEN'
+/** 保存 token */
+export const setToken = async (data: { accessToken: string; refreshToken: string; user?: string }) => {
+  await AsyncStorage.setItem(ACCESS_TOKEN_KEY, data.accessToken);
+  await AsyncStorage.setItem(REFRESH_TOKEN_KEY, data.refreshToken);
+  if (data.user) {
+    await AsyncStorage.setItem(USER_KEY, data.user);
+  }
+};
 
-// 获取token
+/** 获取 accessToken */
 export const getAccessToken = () => {
-  // 此处与TokenKey相同，此写法解决初始化时Cookies中不存在TokenKey报错
-  const accessToken = wsCache.get(AccessTokenKey)
-  return accessToken ? accessToken : wsCache.get('ACCESS_TOKEN')
-}
+  return AsyncStorage.getItem(ACCESS_TOKEN_KEY);
+};
 
-// 刷新token
+/** 获取 refreshToken */
 export const getRefreshToken = () => {
-  return wsCache.get(RefreshTokenKey)
-}
+  return AsyncStorage.getItem(REFRESH_TOKEN_KEY);
+};
 
-// 设置token
-export const setToken = (token: TokenType) => {
-  wsCache.set(RefreshTokenKey, token.refreshToken)
-  wsCache.set(AccessTokenKey, token.accessToken)
-}
+/** 获取用户 */
+export const getUser = () => {
+  return AsyncStorage.getItem(USER_KEY);
+};
 
-// 删除token
-export const removeToken = () => {
-  wsCache.delete(AccessTokenKey)
-  wsCache.delete(RefreshTokenKey)
-}
-
-/** 格式化token（jwt格式） */
-export const formatToken = (token: string): string => {
-  return 'Bearer ' + token
-}
-// ========== 账号相关 ==========
-
-export type LoginFormType = {
-  tenantName: string
-  username: string
-  password: string
-  rememberMe: boolean
-}
-
-export const getLoginForm = () => {
-  const loginForm: LoginFormType = wsCache.get(CACHE_KEY.LoginForm)
-  return loginForm
-}
-
-export const setLoginForm = (loginForm: LoginFormType) => {
-  wsCache.set(CACHE_KEY.LoginForm, loginForm, { exp: 30 * 24 * 60 * 60 })
-}
-
-export const removeLoginForm = () => {
-  wsCache.delete(CACHE_KEY.LoginForm)
-}
+/** 删除 token */
+export const removeToken = async () => {
+  await AsyncStorage.multiRemove([ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY, USER_KEY]);
+};

@@ -8,7 +8,9 @@ export default function Modal() {
   return (
     <>
       <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
-
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Text>⚙️ 设置页面</Text>
+      </View>
       <View>
         <Text>主题</Text>
         <ThemeToggle />
@@ -16,10 +18,3 @@ export default function Modal() {
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 24,
-  },
-});

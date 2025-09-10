@@ -18,6 +18,8 @@ import { cn } from '~/lib/cn';
 import { useColorScheme, useInitialAndroidBarSync } from '~/lib/useColorScheme';
 import { NAV_THEME } from '~/theme';
 
+import { AuthProvider } from "../context/AuthContext";
+
 export {
   ErrorBoundary,
 } from 'expo-router';
@@ -36,10 +38,12 @@ export default function RootLayout() {
         <BottomSheetModalProvider>
           <ActionSheetProvider>
             <NavThemeProvider value={NAV_THEME[colorScheme]}>
-              <Stack screenOptions={SCREEN_OPTIONS}>
-                <Stack.Screen name="(tabs)" options={TABS_OPTIONS} />
-                <Stack.Screen name="modal" options={MODAL_OPTIONS} />
-              </Stack>
+              <AuthProvider >
+                <Stack screenOptions={SCREEN_OPTIONS}>
+                  <Stack.Screen name="(tabs)" options={TABS_OPTIONS} />
+                  {/* <Stack.Screen name="modal" options={MODAL_OPTIONS} /> */}
+                </Stack>
+              </AuthProvider>
             </NavThemeProvider>
           </ActionSheetProvider>
         </BottomSheetModalProvider>

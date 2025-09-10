@@ -1,14 +1,9 @@
-import { Stack } from 'expo-router';
-import { Text } from 'react-native';
-import { Container } from '~/components/Container';
 
+import { View, Text } from 'react-native';
 export default function Home() {
   return (
-    <>
-      <Stack.Screen options={{ title: 'Home' }} />
-      <Container>
-        <Text>主页</Text>
-      </Container>
-    </>
+    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <Text>🏠 Home Page</Text>
+    </View>
   );
 }

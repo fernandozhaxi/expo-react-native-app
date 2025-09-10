@@ -1,5 +1,4 @@
 import 'dotenv/config';
-
 export default {
   expo: {
     name: 'horizon',
@@ -50,9 +49,8 @@ export default {
       eas: {
         projectId: 'xxxx',
       },
-      KEY: process.env.EXPO_PUBLIC_CONSUMER_KEY,
-      SECRET: process.env.EXPO_PUBLIC_CONSUMER_SECRET,
-      API_BASE_URL: process.env.EXPO_PUBLIC_API_BASE_URL,
+      // API_BASE_URL: process.env.EXPO_PUBLIC_API_BASE_URL
+      API_BASE_URL: 123
     },
   },
 };
