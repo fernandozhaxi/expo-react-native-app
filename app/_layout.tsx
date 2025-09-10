@@ -2,12 +2,11 @@ import '../global.css';
 import 'expo-dev-client';
 import { ThemeProvider as NavThemeProvider } from '@react-navigation/native';
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
-
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import Toast from 'react-native-toast-message';
 
-import { Link, Stack } from 'expo-router';
+import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 
 
@@ -38,13 +37,13 @@ export default function RootLayout() {
               <AuthProvider >
                 <Stack screenOptions={SCREEN_OPTIONS}>
                   <Stack.Screen name="(tabs)" options={TABS_OPTIONS} />
-                  {/* <Stack.Screen name="modal" options={MODAL_OPTIONS} /> */}
                 </Stack>
               </AuthProvider>
             </NavThemeProvider>
           </ActionSheetProvider>
         </BottomSheetModalProvider>
       </GestureHandlerRootView>
+      <Toast />
     </>
   );
 }
@@ -55,10 +54,4 @@ const SCREEN_OPTIONS = {
 
 const TABS_OPTIONS = {
   headerShown: false,
-} as const;
-
-const MODAL_OPTIONS = {
-  presentation: 'modal',
-  animation: 'fade_from_bottom', // for android
-  title: 'Modal',
 } as const;

@@ -1,104 +1,9 @@
-import { StyleSheet, Dimensions } from "react-native";
-import { useRouter } from "expo-router";
-import { useState } from "react";
-import { useAuth } from "@/context/AuthContext";
-import {
-  View,
-  Text,
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, View, Text, ScrollView, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-
-const { height } = Dimensions.get("window");
-
-const authStyles = StyleSheet.create({
-  container: {
-    flex: 1,
-    // backgroundColor: COLORS.background,
-  },
-  keyboardView: {
-    flex: 1,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    paddingHorizontal: 24,
-    paddingTop: 40,
-  },
-  image: {
-    width: 320,
-    height: 320,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: "bold",
-    // color: COLORS.text,
-    textAlign: "center",
-    marginBottom: 40,
-  },
-  subtitle: {
-    fontSize: 16,
-    // color: COLORS.textLight,
-    textAlign: "center",
-    marginBottom: 30,
-  },
-  formContainer: {
-    flex: 1,
-  },
-  inputContainer: {
-    marginBottom: 20,
-    position: "relative",
-  },
-  textInput: {
-    fontSize: 16,
-    // color: COLORS.text,
-    paddingVertical: 16,
-    paddingHorizontal: 20,
-    // backgroundColor: COLORS.background,
-    borderRadius: 12,
-    borderWidth: 1,
-    // borderColor: COLORS.border,
-  },
-  eyeButton: {
-    position: "absolute",
-    right: 16,
-    top: 16,
-    padding: 4,
-  },
-  authButton: {
-    // backgroundColor: COLORS.primary,
-    paddingVertical: 18,
-    borderRadius: 12,
-    marginTop: 20,
-    marginBottom: 30,
-  },
-  buttonDisabled: {
-    opacity: 0.7,
-  },
-  buttonText: {
-    fontSize: 16,
-    fontWeight: "600",
-    // color: COLORS.white,
-    textAlign: "center",
-  },
-  linkContainer: {
-    alignItems: "center",
-    paddingBottom: 20,
-  },
-  linkText: {
-    fontSize: 16,
-    // color: COLORS.textLight,
-  },
-  link: {
-    // color: COLORS.primary,
-    fontWeight: "600",
-  },
-});
-
+import { useState } from "react";
+import { useRouter } from "expo-router";
+import { useAuth } from "@/context/AuthContext";
+import { useTheme } from "@react-navigation/native";
 
 const SignInScreen = () => {
   const router = useRouter();
@@ -108,38 +13,42 @@ const SignInScreen = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const { colors } = useTheme();
+
   const handleSignIn = async () => {
     if (!email || !password) {
-      console.log('不能为空')
-      Alert.alert("Error", "Please fill in all fields");
+      alert("Please fill in all fields");
       return;
     }
-
-    await login(email, password);
-    router.back();
+    setLoading(true);
+    try {
+      await login(email, password);
+      router.back();
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <View style={authStyles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={authStyles.keyboardView}
+        style={{ flex: 1 }}
         keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
       >
-        <ScrollView
-          contentContainerStyle={authStyles.scrollContent}
-          showsVerticalScrollIndicator={false}
-        >
+        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+          {/* Title */}
+          <Text style={[styles.title, { color: colors.text }]}>Welcome Back</Text>
+          <Text style={[styles.subtitle, { color: colors.text }]}>Sign in to continue</Text>
 
-          <Text style={authStyles.title}>Welcome Back</Text>
-
-          {/* FORM CONTAINER */}
-          <View style={authStyles.formContainer}>
-            {/* Email Input */}
-            <View style={authStyles.inputContainer}>
+          {/* Form */}
+          <View style={styles.formContainer}>
+            {/* Email */}
+            <View style={[styles.inputContainer, { backgroundColor: colors.card, borderColor: colors.border }]}>
               <TextInput
-                style={authStyles.textInput}
-                placeholder="email/username"
+                style={[styles.textInput, { color: colors.text }]}
+                placeholder="Email / Username"
+                placeholderTextColor={colors.text + "88"} // 半透明占位符
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
@@ -147,43 +56,43 @@ const SignInScreen = () => {
               />
             </View>
 
-            {/* PASSWORD INPUT */}
-            <View style={authStyles.inputContainer}>
+            {/* Password */}
+            <View style={[styles.inputContainer, { backgroundColor: colors.card, borderColor: colors.border }]}>
               <TextInput
-                style={authStyles.textInput}
-                placeholder="password"
+                style={[styles.textInput, { color: colors.text }]}
+                placeholder="Password"
+                placeholderTextColor={colors.text + "88"}
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry={!showPassword}
                 autoCapitalize="none"
               />
-              <TouchableOpacity
-                style={authStyles.eyeButton}
-                onPress={() => setShowPassword(!showPassword)}
-              >
+              <TouchableOpacity style={styles.eyeButton} onPress={() => setShowPassword(!showPassword)}>
                 <Ionicons
                   name={showPassword ? "eye-outline" : "eye-off-outline"}
-                  size={20}
+                  size={22}
+                  color={colors.text}
                 />
               </TouchableOpacity>
             </View>
 
             <TouchableOpacity
-              style={[authStyles.authButton, loading && authStyles.buttonDisabled]}
+              style={[
+                styles.authButton,
+                { backgroundColor: colors.primary, shadowColor: colors.text },
+                loading && styles.buttonDisabled
+              ]}
               onPress={handleSignIn}
               disabled={loading}
               activeOpacity={0.8}
             >
-              <Text style={authStyles.buttonText}>{loading ? "Signing In..." : "Sign In"}</Text>
+              <Text style={[styles.buttonText, { color: colors.background }]}>{loading ? "Signing In..." : "Sign In"}</Text>
             </TouchableOpacity>
 
-            {/* Sign Up Link */}
-            <TouchableOpacity
-              style={authStyles.linkContainer}
-            // onPress={() => router.push("/sign-up")}
-            >
-              <Text style={authStyles.linkText}>
-                Don&apos;t have an account? <Text style={authStyles.link}>Sign up</Text>
+            {/* TODO */}
+            <TouchableOpacity style={styles.linkContainer}>
+              <Text style={[styles.linkText, { color: colors.text }]}>
+                Don't have an account? <Text style={[styles.link, { color: colors.primary }]}>Sign Up</Text>
               </Text>
             </TouchableOpacity>
           </View>
@@ -192,4 +101,80 @@ const SignInScreen = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingHorizontal: 24,
+    paddingTop: 80,
+    paddingBottom: 40,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: "700",
+    textAlign: "center",
+    marginBottom: 10,
+  },
+  subtitle: {
+    fontSize: 16,
+    textAlign: "center",
+    marginBottom: 40,
+    opacity: 0.7,
+  },
+  formContainer: {
+    flex: 1,
+  },
+  inputContainer: {
+    position: "relative",
+    marginBottom: 20,
+    borderWidth: 1,
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  textInput: {
+    fontSize: 16,
+    width: "100%",
+  },
+  eyeButton: {
+    position: "absolute",
+    right: 16,
+    top: 12,
+    padding: 4,
+  },
+  authButton: {
+    paddingVertical: 16,
+    borderRadius: 14,
+    marginTop: 10,
+    marginBottom: 30,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+  buttonDisabled: {
+    opacity: 0.6,
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  linkContainer: {
+    alignItems: "center",
+    paddingBottom: 20,
+  },
+  linkText: {
+    fontSize: 16,
+    opacity: 0.8,
+  },
+  link: {
+    fontWeight: "600",
+  },
+});
+
 export default SignInScreen;

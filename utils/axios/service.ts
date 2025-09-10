@@ -1,6 +1,7 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from "axios";
 import qs from "qs";
 import { config } from "@/utils/axios/config";
+import Toast from 'react-native-toast-message';
 
 import { getAccessToken, getRefreshToken, setToken, removeToken } from "@/utils/auth";
 const { result_code, base_url, request_timeout } = config;
@@ -140,17 +141,26 @@ service.interceptors.response.use(
         });
       }
     } else if (code === 500) {
-      // message.error('Network Error');
+      Toast.show({
+        type: 'error',
+        text1: 'Tips',
+        text2: 'Network Error!',
+        topOffset: 100,
+      })
       return Promise.reject(new Error(msg));
     } else if (code === 901) {
       return Promise.reject(new Error(msg));
     } else if (code !== 200) {
       if (msg === "无效的刷新令牌") {
         // hard coding：忽略这个提示，直接登出
-        console.log(msg);
         return handleAuthorized();
       } else {
-        // message.error(msg);
+        Toast.show({
+          type: 'error',
+          text1: 'Tips',
+          text2: msg,
+          topOffset: 100,
+        })
       }
       return Promise.reject("error");
     } else {
@@ -167,7 +177,12 @@ service.interceptors.response.use(
     } else if (msg.includes("Request failed with status code")) {
       msg = 'Request failed with status code' + msg.substr(msg.length - 3);
     }
-    // message.error(msg);
+    Toast.show({
+      type: 'error',
+      text1: 'Tips',
+      text2: msg,
+      topOffset: 100,
+    })
     return Promise.reject(error);
   }
 );
