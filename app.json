@@ -21,7 +21,7 @@
       "edgeToEdgeEnabled": true
     },
     "web": {
-      "bundler": "horizon",
+      "bundler": "metro",
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
