@@ -1,13 +1,13 @@
 import { Stack } from 'expo-router';
+import { Text } from 'react-native';
 import { Container } from '~/components/Container';
-import ProductsScreen from '~/pages/products';
 
 export default function Home() {
   return (
     <>
       <Stack.Screen options={{ title: 'Home' }} />
       <Container>
-        <ProductsScreen />
+        <Text>主页</Text>
       </Container>
     </>
   );

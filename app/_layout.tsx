@@ -14,7 +14,6 @@ import { StatusBar } from 'expo-status-bar';
 import { Pressable, View } from 'react-native';
 
 
-import { ThemeToggle } from '~/components/ThemeToggle';
 import { cn } from '~/lib/cn';
 import { useColorScheme, useInitialAndroidBarSync } from '~/lib/useColorScheme';
 import { NAV_THEME } from '~/theme';
@@ -61,5 +60,4 @@ const MODAL_OPTIONS = {
   presentation: 'modal',
   animation: 'fade_from_bottom', // for android
   title: 'Modal',
-  headerRight: () => <ThemeToggle />,
 } as const;
