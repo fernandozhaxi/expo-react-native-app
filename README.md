@@ -5,10 +5,14 @@
 
 1. Install dependencies
 
-   ```bash
-   npm install
-   yarn install
-   ```
+```bash
+npm install
+```
+   or
+
+```bash
+yarn install
+```
 
 2. Start the app
 
